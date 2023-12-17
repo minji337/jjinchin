@@ -1,0 +1,54 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "펀드 수익률 및 자산현황 조회 API",
+    "description": "사용자가 질의한 펀드에 대해 수익률과 자산현황을 조회한다.",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://<goorm 개발환경 url>
+    }
+  ],
+  "paths": {
+    "/get_return_rate": {
+      "get": {
+        "description": "펀드의 수익률을 얻어온다.",
+        "operationId": "get_return_rate",	
+        "parameters": [
+          {
+            "name": "펀드명",
+            "in": "query",
+            "description": "펀드명, e.g. 기술혁신펀드,우량채펀드",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "deprecated": false
+      }
+    },
+	"/get_total_assets": {
+      "get": {
+        "description": "펀드의 총 자산을 얻어온다.",
+        "operationId": "get_total_assets",	
+        "parameters": [
+          {
+            "name": "펀드명",
+            "in": "query",
+            "description": "펀드명, e.g. 기술혁신펀드,우량채펀드",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
