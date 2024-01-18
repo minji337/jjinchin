@@ -1,4 +1,4 @@
-from common import client
+from common import client, model
 import math
 import time
 from retry import retry
@@ -86,20 +86,18 @@ class Chatbot:
         return retrieved_run, resp_message.value	
 
 
-    def clean_context(self):
-        for idx in reversed(range(len(self.context))):
-            if self.context[idx]["role"] == "user":
-                self.context[idx]["content"] = self.context[idx]["content"].split("instruction:\n")[0].strip()
-                break
-    
-    def handle_token_limit(self, response):
-        # 누적 토큰 수가 임계점을 넘지 않도록 제어한다.
-        try:
-            current_usage_rate = response['usage']['total_tokens'] / self.max_token_size
-            exceeded_token_rate = current_usage_rate - self.available_token_rate
-            if exceeded_token_rate > 0:
-                remove_size = math.ceil(len(self.context) / 10)
-                self.context = [self.context[0]] + self.context[remove_size+1:]
-        except Exception as e:
-            print(f"handle_token_limit exception:{e}")
+if __name__ == "__main__":
+    chatbot = Chatbot(model=model.basic, assistant_id="asst_g477uFP13KkbZtpAvb8MgxC9")
+    try:
+        chatbot.add_user_message("반갑습니다.")
+        run = chatbot.create_run()
+        _, response_message = chatbot.get_response_content(run)
+    except Exception as e:
+        print("assistants ai error", e)
+        response_message = "[Assistants API 오류가 발생했습니다]"
 
+    # 응답 메시지 출력
+    print("response_message:", response_message)
+
+    
+ 

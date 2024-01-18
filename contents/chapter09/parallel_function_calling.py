@@ -15,7 +15,8 @@ global_lat_lon = {
            '세종시':[36.48,127.29],'울산':[35.54,129.31],'전라남도':[34.90,126.96],
            '전라북도':[35.69,127.24],'제주도':[33.43,126.58],'충청남도':[36.62,126.85],
            '충청북도':[36.79,127.66],'인천':[37.46,126.71],
-           'Boston':[42.36, -71.05]
+           'Boston':[42.36, -71.05],
+           '도쿄':[35.68, 139.69]
           }
 
 #화폐 코드
@@ -52,10 +53,7 @@ def get_currency(**kwargs):
 
     response = requests.get(f"https://api.exchangerate-api.com/v4/latest/{currency_code}")
     data = response.json()
-    if currency_code == 'JPY':
-        krw = data['rates']['KRW'] * 100
-    else:
-        krw = data['rates']['KRW']
+    krw = data['rates']['KRW']
 
     print("환율:", krw) 
     return krw

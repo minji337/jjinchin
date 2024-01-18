@@ -256,6 +256,16 @@
             text-align: center;
         }
 
+        .python-code {
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+            padding: 0 10px;
+            border-radius: 10px;
+        }
+
       
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
@@ -291,11 +301,14 @@
          {% raw %}
         <li class="clearfix">
             <div class="message-data align-right">                
-                <span class="message-data-name" >나!</span>
+                <span class="message-data-name" >나</span>
                 <span class="message-data-time" >Today</span> &nbsp; &nbsp;                
             </div>
             <div class="message my-message float-right">
                 {{messageOutput}}
+                {{#if imageUrl}}
+                    <img src="{{imageUrl}}" alt="Uploaded Image" style="max-width: 250px; display: block; margin: 10px;">
+                {{/if}}
             </div>
       </li>
       {% endraw %}
@@ -314,6 +327,15 @@
                     <div class="loading-dots"><span></span><span></span><span></span></div>
                 {{else}}
                     {{{messageOutput}}}
+                    {{#if imageUrl}}
+                        <div style="display: flex; justify-content: center; align-items: center;"> 
+                            <img src="{{imageUrl}}" alt="Uploaded Image" style="max-width: 200px; display: block; margin: 10px;">
+                        </div>
+                    {{/if}}
+                    {{#if pythonCode}}
+                        사용한 파이썬 코드는 다음이니까 참고해!
+                        <div class="python-code">{{pythonCode}}</div>
+                    {{/if}}
                 {{/if}}                
             </div>
         </li>      
@@ -321,16 +343,10 @@
     </script>
     <script>
         (function () {
-            async function fetchResponse(message) {
-                //const response = await fetch("https://firstcontainer-vqsqv.run.goorm.site/chat-api", {
+            async function fetchResponse(formData) {
                 const response = await fetch("/chat-api", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        request_message: message
-                    })
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -339,7 +355,8 @@
 
                 const data = await response.json();
                 //return data.response;
-                return data['response_message'];
+                //return data['response_message'];
+                return data
             }
 
             var chat = {
@@ -348,6 +365,48 @@
                     this.cacheDOM();
                     this.bindEvents();
                 },                
+                // 드래그 앤 드롭 이벤트 핸들러를 chat 객체 내에 포함시킵니다.
+                initDragAndDrop: function () {
+                    var self = this; // 현재 chat 객체를 self 변수에 저장
+                    var dropArea = document.querySelector('body');
+                    if (!dropArea) {
+                        console.error('Drop area not found');
+                        return;
+                    }
+
+                    // 드래그 오버 이벤트 방지
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        dropArea.addEventListener(eventName, this.preventDefaults, false);
+                    });
+
+                      // 드롭 이벤트 핸들러
+                    dropArea.addEventListener('drop', this.handleDrop.bind(this), false);
+                },
+                preventDefaults: function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                },
+            
+                handleDrop: function (e) {
+                    let dt = e.dataTransfer;
+                    let files = dt.files;
+            
+                    this.handleFiles(files);
+                },
+            
+                handleFiles: function (files) {
+                    ([...files]).forEach(this.uploadFile.bind(this));
+                },
+            
+                uploadFile: function (file) {
+                    var fileInput = document.getElementById('image-upload');
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+            
+                    // 미리보기 기능을 호출합니다.
+                    this.previewImage();
+                },
                 // Cache DOM elements
                 cacheDOM: function () {
                     this.chatHistory = document.querySelector('.chat-history');
@@ -359,16 +418,20 @@
                 bindEvents: function () {
                     this.button.addEventListener('click', this.addMessage.bind(this));
                     this.textarea.addEventListener('keyup', this.addMessageEnter.bind(this));
+                    document.getElementById('image-upload').addEventListener('change', this.previewImage.bind(this));
                 },
                 // Render a new message
-                render: function (message, isUser) {
+                render: function (message, imageUrl, pythonCode, isUser) {
                     //this.scrollToBottom();
 
-                    const templateId = isUser ? "#message-template" : "#message-response-template";
+                    const templateId = isUser ? "#message-template" : "#message-response-template";                    
+
                     const template = Handlebars.compile(document.querySelector(templateId).innerHTML);
 
                     const context = {
                         messageOutput: message,
+                        imageUrl: imageUrl, 
+                        pythonCode: pythonCode,
                         time: this.getCurrentTime()
                     };
 
@@ -424,15 +487,56 @@
 
                 // Add a message and its response
                 addMessage: async function () {
+                    const formData = new FormData();
                     this.messageToSend = this.textarea.value.trim();
-                    this.render(this.messageToSend, true); 
+                    formData.append('message', this.messageToSend); // 메시지 추가
+                    const imageFile = document.getElementById('image-upload').files[0];
+                    if (imageFile) {
+                        formData.append('image', imageFile);
+                    }
+
+                    //-------
+                    let imageUrl = null;
+                    if (imageFile) {
+                        // 이미지 파일을 읽고 렌더링하기 위한 URL 생성
+                        //imageUrl = URL.createObjectURL(imageFile);
+                        formData.append('image', imageFile);
+                    }
+                    //-------
+                    
+                    //this.render(this.messageToSend, true);
+                    this.render(this.messageToSend, null, null, true); 
                     
                     showBubblePromise = this.showBubbleAfterSeconds(500)
                     waitPromise = this.waitSeconds(3500)
-                    const response = await fetchResponse(this.messageToSend);
+                    const response = await fetchResponse(formData);
                     await showBubblePromise //답변이 출력되고 버블링이 발생되는 현상 제어
                     await waitPromise  //최소 2초는 버블링
-                    this.showResponse(response); // 텍스트 메시지 처리                    
+
+                    //this.render(response, false);
+                    //this.render(response, null, false);
+
+                    if (response.response_message) {
+                        this.showResponse(response.response_message); // 텍스트 메시지 처리
+                    }
+
+                    if (response.response_python_code) {
+                        this.render('', null, response.response_python_code, false); // 파이썬 코드 처리
+                    }
+                    
+                    if (response.image) {
+                        this.render('', response.image, null, false); // 이미지 처리
+                    }
+
+                    if (response.audio) {
+                        let audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.src = response.audio;
+                        this.showResponse("오디오 재생 중"); // 텍스트 메시지 처리
+                        await audioPlayer.play();
+                        this.showResponse("오디오 재생 종료"); // 텍스트 메시지 처리
+                    }
+
+                    document.getElementById('image-upload').value = ''; // 이미지 필드 초기화
                 },
                 // Add a message when the Enter key is pressed
                 addMessageEnter: function (event) {
@@ -446,13 +550,93 @@
                 },
                 // Get the current time
                 getCurrentTime: function () {
+                    //return new Date().toLocaleTimeString().
+                    //replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
                     let currentDate = new Date();
                     return currentDate.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
                     
                 },
+                // 이미지 미리보기 함수
+                previewImage: function() {
+                    this.scrollToBottom();
+                    const imageFile = document.getElementById('image-upload').files[0];
+                    if (imageFile) {
+                        const imageUrl = URL.createObjectURL(imageFile);
+                        this.render('', imageUrl, null, true); // 빈 메시지로 이미지만 렌더링
+                    }
+                },
             };
             chat.init();
+            chat.initDragAndDrop();
         })();
+
+
+  //      document.addEventListener('DOMContentLoaded', function () {
+  //          var dropArea = document.querySelector('body');
+//
+  //          // 드래그 오버 이벤트 방지
+  //          ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  //              dropArea.addEventListener(eventName, preventDefaults, false);
+  //          });
+//
+  //          function preventDefaults(e) {
+  //              e.preventDefault();
+  //              e.stopPropagation();
+  //          }
+//
+  //          // 드롭 이벤트 핸들러
+  //          dropArea.addEventListener('drop', handleDrop, false);
+//
+  //          function handleDrop(e) {
+  //              let dt = e.dataTransfer;
+  //              let files = dt.files;
+//
+  //              handleFiles(files);
+  //          }
+//
+  //          function handleFiles(files) {
+  //              ([...files]).forEach(uploadFile);
+  //          }
+//
+  //          function uploadFile(file) {
+  //              var fileInput = document.getElementById('image-upload');
+  //              var dataTransfer = new DataTransfer();
+  //              dataTransfer.items.add(file);
+  //              fileInput.files = dataTransfer.files;
+  //          }
+  //      });
+ 
+ 
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropArea = document.querySelector('body');
+
+            if (!dropArea) {
+                console.error('Drop area not found');
+                return;
+            }
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight(e) {
+                dropArea.classList.add('drag-over');
+            }
+
+            function unhighlight(e) {
+                dropArea.classList.remove('drag-over');
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+        });
 
     </script>
 </body>

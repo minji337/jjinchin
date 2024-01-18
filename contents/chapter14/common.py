@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 class Model: 
     basic: str = "gpt-3.5-turbo-1106"
     advanced: str = "gpt-4-1106-preview"
+    basic_old: str = "gpt-3.5-turbo" 
 
 model = Model();    
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), timeout=30, max_retries=1)
@@ -26,34 +27,6 @@ def makeup_response(message, finish_reason="ERROR"):
                 ],
                 "usage": {"total_tokens": 0},
             }
-
-import os
-from openai import OpenAI
-import pytz
-from datetime import datetime, timedelta
-
-class Model: 
-    basic: str = "gpt-3.5-turbo-1106"
-    advanced: str = "gpt-4-1106-preview"
-
-model = Model();    
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), timeout=30, max_retries=1)
-        
-def makeup_response(message, finish_reason="ERROR"):
-    return {
-                "choices": [
-                    {
-                        "finish_reason": finish_reason,
-                        "index": 0,
-                        "message": {
-                            "role": "assistant",
-                            "content": message
-                        }                   
-                    }
-                ],
-                "usage": {"total_tokens": 0},
-            }
-                
 
 def today():
     korea = pytz.timezone('Asia/Seoul')# 한국 시간대를 얻습니다.
@@ -74,6 +47,4 @@ def currTime():
     now = datetime.now(korea)
     # 시각을 원하는 형식의 문자열로 변환합니다.
     formatted_now = now.strftime("%Y.%m.%d %H:%M:%S")
-    return(formatted_now)
-
-                                
+    return(formatted_now)                

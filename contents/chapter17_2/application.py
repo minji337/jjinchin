@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 import sys
 from common import model, currTime
 from finance_chatbot import Chatbot
-from characters import system_role, instruction
 from concurrent.futures import ThreadPoolExecutor
 import requests
 import concurrent

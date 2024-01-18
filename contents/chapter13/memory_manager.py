@@ -87,7 +87,7 @@ class MemoryManager:
         ] 
         try:
             response = client.chat.completions.create(
-                model=model.advanced, 
+                model=model.advanced, #gpt4
                 messages=context,
                 temperature=0,
                 response_format={"type":"json_object"}
@@ -113,7 +113,7 @@ class MemoryManager:
         context = [{"role": "user", "content": NEEDS_MEMORY_TEMPLATE.format(message=message)}] 
         try:
             response = client.chat.completions.create(
-                        model=model.advanced,
+                        model=model.advanced, #gpt4
                         messages=context,
                         temperature=0,
                     ).model_dump()
