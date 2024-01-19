@@ -1,6 +1,8 @@
 from common import client, makeup_response
 import math
 from memory_manager import MemoryManager
+import threading
+import time
 
 class Chatbot:
     
@@ -14,6 +16,18 @@ class Chatbot:
         self.assistant = kwargs["assistant"]
         self.memoryManager = MemoryManager(**kwargs)
         self.context.extend(self.memoryManager.restore_chat())
+        # 데몬 구동
+        bg_thread = threading.Thread(target=self.background_task)
+        bg_thread.daemon = True
+        bg_thread.start()
+        
+    def background_task(self):
+        while True:
+            self.save_chat()
+            self.context = [{"role": v['role'], "content": v['content'], "saved": True} for v in self.context]
+            self.memoryManager.build_memory()            
+            time.sleep(3600)  # 1시간마다 반복
+            #time.sleep(120)  # 테스트 용도
 
     def add_user_message(self, user_message):
         self.context.append({"role": "user", "content": user_message, "saved" : False})
@@ -88,5 +102,5 @@ class Chatbot:
         return [{"role":v["role"], "content":v["content"]} for v in self.context]
     
     def save_chat(self):
-        #self.memoryManager.save_chat(self.context)            
-        pass
+        self.memoryManager.save_chat(self.context)            
+        #pass

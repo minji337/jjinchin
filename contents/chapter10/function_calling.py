@@ -67,7 +67,7 @@ def search_internet_for_report(**kwargs):
     print("search_internet",kwargs)
     response = tavily.search(query=kwargs['search_query'], max_results=2, search_depth="advanced")
     contents = [{"content": result['content'], "url": result['url']} 
-                for result in response['results'][:2]]
+                for result in response['results']]
     print("contents",contents)
     return f"수집된 자료:{contents}"
 

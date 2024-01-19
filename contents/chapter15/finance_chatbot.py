@@ -225,7 +225,6 @@ if __name__ == "__main__":
     
     assistant = client.beta.assistants.create(
                     model=model.advanced,  
-                    #model="gpt-3.5-turbo-1106",
                     name="금융 상품 상담해주는 내 찐친 고비",
                     instructions=instructions,
                     tools=tools,

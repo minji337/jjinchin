@@ -5,17 +5,17 @@ from finance_chatbot import Chatbot
 
 # jjinchin 인스턴스 생성
 jjinchin = Chatbot(
-    assistant_id="asst_g477uFP13KkbZtpAvb8MgxC9",
-    thread_id="thread_EiIW93i29UouuzggaQfFNGvX"
+    assistant_id="asst_70yCniednJ6o3KWLIZAUzEE6",
+    thread_id="thread_zlhXipoohwPiLXyRE42PEYP2"
 )
 
-finance_app = Flask(__name__)
+application = Flask(__name__)
 
-@finance_app.route("/chat-app")
+@application.route("/chat-app")
 def chat_app():
     return render_template("chat.html")
 
-@finance_app.route('/chat-api', methods=['POST'])
+@application.route('/chat-api', methods=['POST'])
 def chat_api():
     request_message = request.form.get("message")     
     print("request_message:", request_message)
@@ -32,4 +32,4 @@ def chat_api():
     return {"response_message": response_message, "response_python_code": response_python_code}
 
 if __name__ == "__main__":
-    finance_app.run(host='0.0.0.0', port=int(sys.argv[1]))
+    application.run(host='0.0.0.0', port=int(sys.argv[1]))

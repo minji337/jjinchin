@@ -61,7 +61,7 @@ def get_currency(**kwargs):
 def search_internet(**kwargs):
     print("search_internet",kwargs)
     answer = tavily.search(query=kwargs['search_query'], include_answer=True)['answer']
-    print("answer",answer)
+    print("answer:",answer)
     return answer
 
 func_specs = [
@@ -155,14 +155,3 @@ class FunctionCalling:
             print("Error occurred(run):",e)
             return makeup_response("[run 오류입니다]")
                     
-    
-    def call_function(self, analyzed_dict):        
-        func_name = analyzed_dict["function_call"]["name"]
-        func_to_call = self.available_functions[func_name]                
-        try:            
-            func_args = json.loads(analyzed_dict["function_call"]["arguments"])
-            func_response = func_to_call(**func_args)
-            return str(func_response)
-        except Exception as e:
-            print("Error occurred(call_function):",e)
-            return makeup_response("[call_function 오류입니다]")

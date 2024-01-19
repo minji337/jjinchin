@@ -1,5 +1,5 @@
 from common import client, model
-from characters import system_role, instruction
+from characters import system_role
 from pprint import pprint
 import time
 
@@ -11,12 +11,18 @@ assistant = client.beta.assistants.create(
 
 pprint(assistant.model_dump())
 
-assistant = client.beta.assistants.retrieve(assistant_id = 'asst_5mvewDLvPyerdDBqr8OTq2co')
+##############################################
+
+#assistant = client.beta.assistants.retrieve(assistant_id = 'asst_5mvewDLvPyerdDBqr8OTq2co')
+assistant = client.beta.assistants.retrieve(assistant_id = assistant.id)
+
+##############################################
 
 thread = client.beta.threads.create()
 pprint(thread.model_dump())
 
-thread = client.beta.threads.retrieve(thread_id ='thread_PBQgV0UINj2UKyxSSBJ4k012')
+#thread = client.beta.threads.retrieve(thread_id ='thread_PBQgV0UINj2UKyxSSBJ4k012')
+thread = client.beta.threads.retrieve(thread_id = thread.id)
 
 user_message = client.beta.threads.messages.create(
                     thread_id=thread.id,
@@ -24,6 +30,7 @@ user_message = client.beta.threads.messages.create(
                     content="고비야 반가워! 잘 지냈지?"
         )
 pprint(user_message.model_dump())	
+
 
 thread_messages = [m for m in list(client.beta.threads.messages.list(thread_id=thread.id))]
 print([user_message] == thread_messages)

@@ -23,7 +23,7 @@ vector2 = client.embeddings.create(input=text2, model="text-embedding-ada-002").
 index.upsert([("id1", vector1, {"input_date": "20230801"})])
 index.upsert([("id2", vector2, {"input_date": "20230801"})])
 
-time.sleep(10)
+time.sleep(20) # 데이터베이스 반영에 시간이 걸릴 수 있어 대기시간 적용
 
 query = "동화책"
 query_vector = client.embeddings.create(input=query, model="text-embedding-ada-002").data[0].embedding

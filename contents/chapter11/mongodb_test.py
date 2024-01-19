@@ -1,6 +1,8 @@
 from pymongo import MongoClient
+import os
 
-cluster=MongoClient("mongodb+srv://minji337:alswl337@cluster0.ov3wpli.mongodb.net/?retryWrites=true&w=majority")
+#cluster=MongoClient("mongodb+srv://<id>:<password>@cluster0.ov3wpli.mongodb.net/?retryWrites=true&w=majority")
+cluster=MongoClient(os.getenv("MONGO_CLUSTER_URI"))
 db=cluster["jjinchin"]
 collection = db["chats"]
 

@@ -20,6 +20,12 @@ def welcome(): # 함수명은 꼭 welcome일 필요는 없습니다.
 def chat_app():
     return render_template("chat.html")
 
+# 메아리 코드
+# @application.route('/chat-api', methods=['POST'])
+# def chat_api():
+#     print("request.json:", request.json)
+#     return {"response_message": "나도 " + request.json['request_message']}
+
 @application.route('/chat-api', methods=['POST'])
 def chat_api():
     request_message = request.json['request_message']
