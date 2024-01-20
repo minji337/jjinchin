@@ -58,7 +58,7 @@ def create_image(jjinchin):
     image_response = requests.get(url_response.data[0].url)
     # 요청이 성공했는지 확인합니다 (200 OK)
     if image_response.status_code == 200:
-        prompt = f"{user_message}=> 당신의 찐친이 요청한 메시지에 대해 다음의 그림을 그렸습니다. 이 그림을 절친에게 설명하세요."
+        prompt = f"{user_message}=> 당신은 민지에게 다음 그림을 그려 주었습니다. 왜 이런 그림을 그렸는지 설명하세요.:\n{jjinchin.instruction}"
         encoded_image = base64.b64encode(image_response.content).decode('utf-8')        
         response = ask_gpt_vision(prompt, encoded_image)
         return encoded_image, response        

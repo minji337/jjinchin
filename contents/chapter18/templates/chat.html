@@ -255,6 +255,17 @@
         .center-image {
             text-align: center;
         }
+        
+        .python-code {
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+            padding: 0 10px;
+            border-radius: 10px;
+        }
+
 
       
     </style>
@@ -321,6 +332,10 @@
                         <div style="display: flex; justify-content: center; align-items: center;"> 
                             <img src="{{imageUrl}}" alt="Uploaded Image" style="max-width: 200px; display: block; margin: 10px;">
                         </div>
+                    {{/if}}
+					{{#if pythonCode}}
+                        사용한 파이썬 코드는 다음이니까 참고해!
+                        <div class="python-code">{{pythonCode}}</div>
                     {{/if}}
                 {{/if}}                
             </div>
@@ -407,7 +422,7 @@
                     document.getElementById('image-upload').addEventListener('change', this.previewImage.bind(this));
                 },
                 // Render a new message
-                render: function (message, imageUrl, isUser) {
+                render: function (message, imageUrl, pythonCode, isUser) {
                     //this.scrollToBottom();
 
                     const templateId = isUser ? "#message-template" : "#message-response-template";                    
@@ -416,7 +431,8 @@
 
                     const context = {
                         messageOutput: message,
-                        imageUrl: imageUrl, // 이미지 URL 추가
+                        imageUrl: imageUrl, 
+                        pythonCode: pythonCode,
                         time: this.getCurrentTime()
                     };
 
@@ -490,7 +506,7 @@
                     //-------
                     
                     //this.render(this.messageToSend, true);
-                    this.render(this.messageToSend, null, true); 
+                    this.render(this.messageToSend, null, null, true); 
                     
                     showBubblePromise = this.showBubbleAfterSeconds(500)
                     waitPromise = this.waitSeconds(3500)
@@ -503,19 +519,19 @@
 
                     if (response.response_message) {
                         this.showResponse(response.response_message); // 텍스트 메시지 처리
-                    } 
-
-                    if (response.audio) {
+                    }
+					if (response.response_python_code) {
+                        this.render('', null, response.response_python_code, false); // 파이썬 코드 처리
+                    }
+					if (response.audio) {
                         let audioPlayer = document.getElementById('audioPlayer');
                         audioPlayer.src = response.audio;
                         this.showResponse("[오디오 재생]"); // 텍스트 메시지 처리
                         audioPlayer.play();
                     }
-                    
                     if (response.image) {
-                        this.render('', response.image, false); // 이미지 처리
+                        this.render('', response.image, null, false); // 이미지 처리
                     }
-
                     document.getElementById('image-upload').value = ''; // 이미지 필드 초기화
                 },
                 // Add a message when the Enter key is pressed
@@ -542,7 +558,7 @@
                     const imageFile = document.getElementById('image-upload').files[0];
                     if (imageFile) {
                         const imageUrl = URL.createObjectURL(imageFile);
-                        this.render('', imageUrl, true); // 빈 메시지로 이미지만 렌더링
+                        this.render('', imageUrl, null, true); // 빈 메시지로 이미지만 렌더링
                     }
                 },
             };

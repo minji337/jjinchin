@@ -1,19 +1,19 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "펀드 수익률 및 자산현황 조회 API",
-    "description": "사용자가 질의한 펀드에 대해 수익률과 자산현황을 조회한다.",
+    "title": "펀드 수익율 및 자산현황 조회 API",
+    "description": "사용자가 질의한 펀드에 대해 수익율과 자산현황을 조회한다.",
     "version": "v1.0.0"
   },
   "servers": [
     {
-      "url": "https://<goorm 개발환경 url>
+      "url": "https:/"
     }
   ],
   "paths": {
     "/get_return_rate": {
       "get": {
-        "description": "펀드의 수익률을 얻어온다.",
+        "description": "펀드의 수익율을 얻어온다.",
         "operationId": "get_return_rate",	
         "parameters": [
           {

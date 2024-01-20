@@ -155,9 +155,12 @@ class Chatbot:
             raise e            
         
     def get_response_content(self, run) -> (openai.types.beta.threads.run.Run, str):
+
         max_polling_time = 60 # 최대 1분 동안 폴링합니다.
         start_time = time.time()
-        retrieved_run = run        
+
+        retrieved_run = run
+        
         while(True):
             elapsed_time  = time.time() - start_time
             if elapsed_time  > max_polling_time:
@@ -222,7 +225,6 @@ if __name__ == "__main__":
     
     assistant = client.beta.assistants.create(
                     model=model.advanced,  
-                    #model="gpt-3.5-turbo-1106",
                     name="금융 상품 상담해주는 내 찐친 고비",
                     instructions=instructions,
                     tools=tools,

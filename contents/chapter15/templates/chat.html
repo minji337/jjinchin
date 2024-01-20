@@ -519,11 +519,9 @@
                     if (response.response_message) {
                         this.showResponse(response.response_message); // 텍스트 메시지 처리
                     }
-
                     if (response.response_python_code) {
                         this.render('', null, response.response_python_code, false); // 파이썬 코드 처리
-                    }
-                    
+                    }                    
                     if (response.image) {
                         this.render('', response.image, null, false); // 이미지 처리
                     }
@@ -531,9 +529,8 @@
                     if (response.audio) {
                         let audioPlayer = document.getElementById('audioPlayer');
                         audioPlayer.src = response.audio;
-                        this.showResponse("오디오 재생 중"); // 텍스트 메시지 처리
-                        await audioPlayer.play();
-                        this.showResponse("오디오 재생 종료"); // 텍스트 메시지 처리
+                        this.showResponse("[오디오 재생]"); // 텍스트 메시지 처리
+                        audioPlayer.play();
                     }
 
                     document.getElementById('image-upload').value = ''; // 이미지 필드 초기화
