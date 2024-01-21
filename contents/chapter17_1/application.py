@@ -54,7 +54,10 @@ def chat_kakao():
     print("response_message:", response_message)
     return format_response(response_message)
 
+
+
 # 비동기 호출 개선 전 코드
+
 # def async_send_request(chat_gpt, user_message, callbackUrl):
 #     chat_gpt.add_user_message(user_message)
 #     response = chat_gpt.send_request()
@@ -79,19 +82,23 @@ def chat_kakao():
 #     print("immediate_response",immediate_response)
 #     return immediate_response
 
-    
-def async_send_request(chat_gpt, callbackUrl, future):
-    # future가 완료될 때까지 대기. 이후는 개선 전 코드와 동일
-    response = future.result()
-    chat_gpt.add_response(response)
-    response_message = chat_gpt.get_response_content()
-    print("response_message:", response_message)
-    chat_gpt.handle_token_limit(response)
-    chat_gpt.clean_context()            
-    response_to_kakao = format_response(response_message, useCallback=False)
-    callbackResponse = requests.post(callbackUrl, json=response_to_kakao)
-    print("CallbackResponse:", callbackResponse.text)
-    print(f"{'-'*50}\n{currTime()} requests.post 완료\n{'-'*50}")
+
+
+
+# 비동기 호출 개선 후 코드    
+
+# def async_send_request(chat_gpt, callbackUrl, future):
+#     # future가 완료될 때까지 대기. 이후는 개선 전 코드와 동일
+#     response = future.result()
+#     chat_gpt.add_response(response)
+#     response_message = chat_gpt.get_response_content()
+#     print("response_message:", response_message)
+#     chat_gpt.handle_token_limit(response)
+#     chat_gpt.clean_context()            
+#     response_to_kakao = format_response(response_message, useCallback=False)
+#     callbackResponse = requests.post(callbackUrl, json=response_to_kakao)
+#     print("CallbackResponse:", callbackResponse.text)
+#     print(f"{'-'*50}\n{currTime()} requests.post 완료\n{'-'*50}")
     
 
 # @application.route('/chat-kakao', methods=['POST'])

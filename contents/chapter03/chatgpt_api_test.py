@@ -1,11 +1,12 @@
 from pprint import pprint
 import os
-import openai
+from openai import OpenAI
 
 # 여러분들이 발급받은 api_key로 바꿔주세요. 
 #api_key = "sk-"
 api_key = os.getenv("OPENAI_API_KEY")
-client = openai.OpenAI(api_key=api_key)
+client = OpenAI() # 이것도 가능
+#client = OpenAI(api_key=api_key)
 
 model = "gpt-3.5-turbo-1106"
 
