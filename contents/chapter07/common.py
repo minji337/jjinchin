@@ -9,3 +9,4 @@ class Model:
     
 model = Model();    
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), timeout=30, max_retries=1)
+

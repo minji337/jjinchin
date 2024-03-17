@@ -22,5 +22,4 @@ collection.insert_one(my_friend)
 
 for result in collection.find({}):
     print(result)
-
-#collection.delete_many({})
+    

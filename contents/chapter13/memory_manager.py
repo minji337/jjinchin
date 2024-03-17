@@ -32,7 +32,7 @@ Answer whether statement2 is appropriate as a memory for statement1 in the follo
 """
 
 SUMMARIZING_TEMPLATE = """
-당신의 사용자의 메시지를 아래의 JSON 형식으로 대화 내용을 주제별로 요약하는 기계입니다.
+당신은 사용자의 메시지를 아래의 JSON 형식으로 대화 내용을 주제별로 요약하는 기계입니다.
 1. 주제는 구체적이며 의미가 있는 것이어야 합니다.
 2. 요약 내용에는 '민지는...', '고비는...'처럼 대화자의 이름이 들어가야 합니다.
 3. 원문을 최대한 유지하며 요약해야 합니다. 
@@ -76,7 +76,7 @@ class MemoryManager:
         ] 
         try:
             response = client.chat.completions.create(
-                model=model.advanced, ##gpt-4-1106-preview
+                model=model.advanced, #gpt-4-1106-preview
                 messages=context,
                 temperature=0,
                 response_format={"type":"json_object"}
@@ -154,10 +154,6 @@ class MemoryManager:
             return
         pinecone_index.delete(ids=ids)
         mongo_memory_collection.delete_many({"date":date})
-        
-    def next_memory_id(self):
-        result = mongo_memory_collection.find_one(sort=[('_id', -1)])
-        return 1 if result is None else result['_id'] + 1
 
     def save_to_memory(self, summaries, date):
         next_id = self.next_memory_id()
@@ -174,8 +170,12 @@ class MemoryManager:
             mongo_memory_collection.update_one(query, newvalues, upsert=True)
             next_id += 1
 
+    def next_memory_id(self):
+        result = mongo_memory_collection.find_one(sort=[('_id', -1)])
+        return 1 if result is None else result['_id'] + 1
+
     def build_memory(self):
-        print(f"{currTime()}: build_memory started...")
+        # print(f"{currTime()}: build_memory started...")
         date = yesterday()                        
         #date = today() # 테스트 용도
         memory_results = mongo_memory_collection.find({"date": date})

@@ -4,7 +4,7 @@ from common import client, makeup_response
 USER_MONITOR_TEMPLATE = """
 <대화록>을 읽고 아래의 json 형식에 따라 답하세요.
 ```
-{{"{user}의 마지막 대화가 불쾌한 말을 하고 있는지":true/false>, "{user}의 마지막 대화가 모순적인 말을 하고 있는지":true/false>}}
+{{"{user}의 마지막 대화가 불쾌한 말을 하고 있는지":<true/false>, "{user}의 마지막 대화가 모순적인 말을 하고 있는지":<true/false>}}
 ```
 <대화록>
 """
@@ -38,7 +38,7 @@ class WarningAgent:
     def monitor_user(self, context):        
         self.checked_list = []
         self.checked_context = []
-        if len(context) <= abs(MIN_CONTEXT_SIZE): #최소 컨텍스트 크기
+        if len(context) <= abs(MIN_CONTEXT_SIZE): #최소 컨텍스트 크기(-3)
             return False
         self.checked_context = context[-3:]
         
@@ -55,7 +55,7 @@ class WarningAgent:
             return False
         
         print("self.checked_list:",self.checked_list)
-        return sum(self.checked_list) > 0  #파이썬에서 True는 숫자 1로 연산됨
+        return sum(self.checked_list) > 0  # 파이썬에서 True는 숫자 1로 연산됨
           
     def warn_user(self):
         idx = [idx for idx, tf in enumerate(self.checked_list) if tf][0] 
@@ -78,6 +78,6 @@ class WarningAgent:
             return content
         except Exception as e:
             print(f"Exception 오류({type(e)}) 발생:{e}")
-            return makeup_response("[경고 처리 중 문제가 발생했습니다. 잠시 뒤 이용해주세요]")
+            return makeup_response("[경고 처리 중 문제가 발생했습니다. 잠시 뒤 이용해주세요.]")
 
 

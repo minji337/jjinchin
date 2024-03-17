@@ -18,8 +18,6 @@ system_role = """
 }
 """
 
-summaries = []
-
 with open("대화원천내용.json", "r", encoding="utf-8") as f:
     conversations = json.load(f)
 

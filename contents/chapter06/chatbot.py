@@ -54,7 +54,6 @@ if __name__ == "__main__":
 
     # 응답 메시지 출력
     print(chatbot.get_response_content())
-
     pprint(chatbot.context) 
 
 

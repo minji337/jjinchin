@@ -11,7 +11,7 @@ agenda = """
 """
 
 sampling_tempalte = """
-{agenda}에 대해 논의 중이니다.
+{agenda}에 대해 논의 중입니다.
 ```
 [이전 의견]:
 {selected}
@@ -30,7 +30,7 @@ evaluation_template = """
 [의견]: 
 {thought}
 ```
-위의 의견]을 아래 JSON 형식으로 평가하세요.
+위의 [의견]을 아래 JSON 형식으로 평가하세요.
 {{
     "창의적이고 혁신적인 방법인가": <15점 만점 기준 점수>,
     "단기간 내에 실현 가능한 방법인지": <10점 만점 기준 점수>,
@@ -58,7 +58,7 @@ def generate_thoughts(selected):
     samples = []
     message = sampling_tempalte.format(agenda=agenda, selected=selected)
     for _ in range(5):
-        # 필요하면 GPT-4로 대체해볼 것
+        # 필요하면 GPT-4로 대체해 볼 것
         sample = request_gpt(message, "gpt-3.5-turbo-1106", temperature=1.2)
         samples.append(sample['구현'])
         #print("generate_thoughts:", sample['구현'])

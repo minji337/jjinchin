@@ -179,7 +179,7 @@ class Chatbot:
                 self._run_action(retrieved_run)
             elif retrieved_run.status in ["failed", "cancelled", "expired"]:
                 # 실패, 취소, 만료 등 오류 상태 처리
-                #raise ValueError(f"run status: {retrieved_run.status}, {retrieved_run.last_error}")
+                # raise ValueError(f"run status: {retrieved_run.status}, {retrieved_run.last_error}")
                 code = retrieved_run.last_error.code
                 message = retrieved_run.last_error.message
                 return retrieved_run, f"{code}: {message}"

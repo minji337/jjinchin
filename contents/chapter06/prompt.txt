@@ -24,7 +24,7 @@
 
 	import openai
 	 
-	# 여러분이 발급받은 api_key로 바꿔주세요. 
+	# 여러분이 발급받은 api_key로 바꿔 주세요. 
 	api_key = "sk-DHuZfMLH16NIerGWx9zLT2BlbkFJuqXeAObX6lNkChFHy94E"
 	client = openai.OpenAI(api_key=api_key)
 

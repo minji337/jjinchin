@@ -51,12 +51,9 @@ def create_image(jjinchin):
         quality = "standard",
         n=1,
     )    
-    
-    print("url_response.data[0].url: ", url_response.data[0].url)
-    
-    # 이미지를 요청하고 응답을 받습니다
+    # 이미지를 요청하고 응답을 받습니다.
     image_response = requests.get(url_response.data[0].url)
-    # 요청이 성공했는지 확인합니다 (200 OK)
+    # 요청이 성공했는지 확인합니다. (200 OK)
     if image_response.status_code == 200:
         prompt = f"{user_message}=> 당신은 민지에게 다음 그림을 그려 주었습니다. 왜 이런 그림을 그렸는지 설명하세요.:\n{jjinchin.instruction}"
         encoded_image = base64.b64encode(image_response.content).decode('utf-8')        
