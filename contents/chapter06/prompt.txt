@@ -1,0 +1,110 @@
+다음  순서대로 파이썬 챗봇 프로그램을 개발하세요.
+- step-1: <테스트 시나리오/>를 요약하세요.
+- step-2: <클래스 요건/>에 따라 프로그램을 작성하세요.
+- step-3: <테스트 시나리오/>대로 동작하도록 실행코드를 작성하세요.
+```   
+<클래스 요건>
+    이름 : Chatbot
+    데이터 : 
+        - 이름: context 
+        - 데이터타입: 리스트
+    메서드 :
+        - 초기화 : context 데이터를 만들고 시스템을 역할을 설정한다.
+        - 사용자 메시지 추가 : 채팅 창에서 수신한 사용자의 메시지를 context 데이터에 추가한다.
+        - 요청전송 : context 데이터 전체를 openai api의 입력값으로 하여 전송한다.
+        - 응답내용추가 : 요청 결과 중 응답내용을 context 데이터에 추가한다.
+        - 응답내용반환 : 응답내용을 콘솔에 출력한 후 반환한다.        
+    참고사항: 
+        - openai api는 아래의 <openai api 연동/>을 참고할 것.
+        - 메서드와 변수명은 영문으로 작성할 것.
+</클래스 요건>
+
+<openai api 연동 > 
+	from pprint import pprint
+
+	import openai
+	 
+	# 여러분이 발급받은 api_key로 바꿔 주세요. 
+	api_key = "sk-DHuZfMLH16NIerGWx9zLT2BlbkFJuqXeAObX6lNkChFHy94E"
+	client = openai.OpenAI(api_key=api_key)
+
+	model = "gpt-4o-mini-2024-07-18"
+
+	messages = [
+			{"role": "system", "content": "You are a helpful assistant."},
+			{"role": "user", "content": "Who won the world series in 2020?"},
+		]    
+
+	response = client.chat.completions.create(model=model, messages=messages).model_dump()
+
+	pprint(response)
+	```
+
+	print(response) 출력 결과:
+	{'choices': [{'finish_reason': 'stop',
+              'index': 0,
+              'logprobs': None,
+              'message': {'content': 'The Los Angeles Dodgers won the World '
+                                     'Series in 2020. They defeated the Tampa '
+                                     'Bay Rays to claim the championship, '
+                                     "marking the Dodgers' first World Series "
+                                     'title since 1988.',
+                          'function_call': None,
+                          'role': 'assistant',
+                          'tool_calls': None}}],
+     'created': 1722146245,
+     'id': 'chatcmpl-9prCHVVauIwRsyz3tF7hL72eKxikv',
+     'model': 'gpt-4o-mini-2024-07-18',
+     'object': 'chat.completion',
+     'system_fingerprint': 'fp_ba606877f9',
+     'usage': {'completion_tokens': 37, 'prompt_tokens': 27, 'total_tokens': 64}}
+</openai api 연동>
+
+
+<테스트 시나리오>
+
+	 프로그램 구동
+	① 프로그램 최초 구동 직후
+	context =  [
+		{"role": "system", "content": "You are a helpful assistant."}
+	]
+
+	② 사용자가 입력한 "Who won the world series in 2020?"를 수신
+
+	③ 사용자의 메시지를 context에 추가
+	context =  [
+		{"role": "system", "content": "You are a helpful assistant."},
+		{"role": "user", "content": "Who won the world series in 2020?"},
+	]
+
+	④ 문맥 전송: 현재 context를 openai api 입력값으로 설정하여 전송 
+
+	⑤ 응답 수신 : 아래 메시지가 포함된 response를 수신
+	"message": {
+				  "role": "assistant",
+				  "content": "The Los Angeles Dodgers won the World Series in 2020."
+			  },
+
+	⑥ 응답 내용을 context에 추가
+	context =  [
+		{"role": "system", "content": "You are a helpful assistant."},
+		{"role": "user", "content": "Who won the world series in 2020?"},
+		{"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in  2020."},
+	],
+
+	⑦ 채팅 창에 응답 메시지 출력
+	“The Los Angeles Dodgers won the World Series in 2020”.
+
+	사용자가 채팅 창에 메시지를 다시 입력
+	② 사용자가 채팅 창에 "Where was it played?" 입력
+
+	③ 사용자의 메시지를 context에 추가
+	context =  [
+		{"role": "system", "content": "You are a helpful assistant."},
+		{"role": "user", "content": "Who won the world series in 2020?"},
+		{"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in
+	2020."},
+		{"role": "user", "content": "Where was it played?"}
+	]
+</테스트 시나리오>
+
