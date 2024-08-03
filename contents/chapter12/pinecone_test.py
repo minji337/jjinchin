@@ -3,7 +3,7 @@ import os
 from pinecone.grpc import PineconeGRPC as Pinecone
 import time
 
-pinecone_api_key = os.getenv("PINECONE_API_KEY")
+pinecone_api_key = "dc345cff-8e0b-47f7-a85a-820b1da061d8" #os.getenv("PINECONE_API_KEY")
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 pinecone = Pinecone(api_key=pinecone_api_key)

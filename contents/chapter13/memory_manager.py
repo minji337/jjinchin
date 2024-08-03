@@ -114,7 +114,7 @@ class MemoryManager:
         ]
         try:
             response = client.chat.completions.create(
-                model=model.advanced,  # gpt-4-1106-preview
+                model=model.advanced, 
                 messages=context,
                 temperature=0,
             ).model_dump()

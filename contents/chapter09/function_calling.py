@@ -147,7 +147,7 @@ class FunctionCalling:
         
 
     def run(self, analyzed, analyzed_dict, context):
-        context.append(analyzed_dict)
+        context.append(analyzed)
         tool_call = analyzed_dict["tool_calls"][0]
         function = tool_call["function"]
         func_name = function["name"]

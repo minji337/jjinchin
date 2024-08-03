@@ -219,7 +219,6 @@ if __name__ == "__main__":
     )
     
     file_ids = [file1.id, file2.id]
-    #file_ids = ["file-4Oo8IJcoZ4HLSiFJa8uSXCXZ", "file-516RAEQ2ymC7VcOIqhHfDa7c"]
     
     assistant = client.beta.assistants.create(
                     model=model.advanced,  
@@ -228,7 +227,7 @@ if __name__ == "__main__":
                     tools=tools,
                     tool_resources={
                         "code_interpreter": {
-                        "file_ids": file_ids # 파일(지식정보)는 코드 인터프리터를 통해 접근(벡터 스토어를 만들어서 접근하는 방법도 존재)
+                        "file_ids": file_ids 
                         }
                     }
                 )

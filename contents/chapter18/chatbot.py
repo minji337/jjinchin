@@ -1,4 +1,4 @@
-from common import client, makeup_response
+from common import client, makeup_response, gpt_num_tokens
 import math
 
 class Chatbot:
@@ -8,29 +8,28 @@ class Chatbot:
         self.model = model
         self.instruction = instruction
         self.max_token_size = 16 * 1024
-        self.available_token_rate = 0.9
 
     def add_user_message(self, user_message):
         self.context.append({"role": "user", "content": user_message})
 
     def _send_request(self):
         try:
-            response = client.chat.completions.create(
-                model=self.model, 
-                messages=self.context,
-                temperature=0.5,
-                top_p=1,
-                max_tokens=256,
-                frequency_penalty=0,
-                presence_penalty=0
-            ).model_dump()
-        except Exception as e:
-            print(f"Exception 오류({type(e)}) 발생:{e}")
-            if 'maximum context length' in str(e):
+            if gpt_num_tokens(self.context) > self.max_token_size:
                 self.context.pop()
                 return makeup_response("메시지 조금 짧게 보내줄래?")
-            else: 
-                return makeup_response("[내 찐친 챗봇에 문제가 발생했습니다. 잠시 뒤 이용해주세요]")
+            else:
+                response = client.chat.completions.create(
+                    model=self.model, 
+                    messages=self.context,
+                    temperature=0.5,
+                    top_p=1,
+                    max_tokens=256,
+                    frequency_penalty=0,
+                    presence_penalty=0
+                ).model_dump()
+        except Exception as e:
+            print(f"Exception 오류({type(e)}) 발생:{e}")
+            return makeup_response("[내 찐친 챗봇에 문제가 발생했습니다. 잠시 뒤 이용해주세요]")
 
         return response
     
@@ -57,9 +56,7 @@ class Chatbot:
     def handle_token_limit(self, response):
         # 누적 토큰 수가 임계점을 넘지 않도록 제어한다.
         try:
-            current_usage_rate = response['usage']['total_tokens'] / self.max_token_size
-            exceeded_token_rate = current_usage_rate - self.available_token_rate
-            if exceeded_token_rate > 0:
+            if response['usage']['total_tokens'] > self.max_token_size:
                 remove_size = math.ceil(len(self.context) / 10)
                 self.context = [self.context[0]] + self.context[remove_size+1:]
         except Exception as e:

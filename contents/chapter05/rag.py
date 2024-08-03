@@ -32,7 +32,7 @@ system_role = """
 
 template = """
 신조어 {신조어}의 뜻을 말해주세요.
-""".format(신조어="자만추")
+""".format(신조어="킹받네")
 
 context = [{"role": "system", "content": system_role},
            {"role": "user", "content": template}] 

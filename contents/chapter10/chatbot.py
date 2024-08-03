@@ -9,7 +9,6 @@ class Chatbot:
         self.model = model
         self.instruction = instruction
         self.max_token_size = 16 * 1024
-        self.available_token_rate = 0.9
         self.kwargs = kwargs
         self.user = kwargs["user"]
         self.assistant = kwargs["assistant"]
@@ -72,9 +71,7 @@ class Chatbot:
     def handle_token_limit(self, response):
         # 누적 토큰 수가 임계점을 넘지 않도록 제어한다.
         try:
-            current_usage_rate = response['usage']['total_tokens'] / self.max_token_size
-            exceeded_token_rate = current_usage_rate - self.available_token_rate
-            if exceeded_token_rate > 0:
+            if response['usage']['total_tokens'] > self.max_token_size:
                 remove_size = math.ceil(len(self.context) / 10)
                 self.context = [self.context[0]] + self.context[remove_size+1:]
         except Exception as e:
