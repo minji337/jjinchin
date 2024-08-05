@@ -28,6 +28,7 @@ def chat_api():
     except Exception as e:
         print("assistants ai error", e)
         response_message = "[Assistants API 오류가 발생했습니다]"
+        return {"response_message": response_message, "response_python_code": None} 
             
     print("response_message:", response_message)
     return {"response_message": response_message, "response_python_code": response_python_code}

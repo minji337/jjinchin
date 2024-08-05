@@ -424,6 +424,7 @@
                 // Add a message and its response
                 addMessage: async function () {
                     this.messageToSend = this.textarea.value.trim();
+                    if (this.messageToSend === '') return; // 빈 메시지 방지
                     this.render(this.messageToSend, true); 
                     
                     showBubblePromise = this.showBubbleAfterSeconds(500)

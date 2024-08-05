@@ -32,7 +32,7 @@ Thought, Action, Observation 단계를 번갈아 가며 질문에 답해가는 �
 """
 context = [{"role": "user", "content": template}] 
 response = client.chat.completions.create(
-            model="gpt-4o", 
+            model="gpt-4o-2024-05-13", 
             messages=context,
             temperature=0,
             seed=123

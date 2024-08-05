@@ -11,7 +11,7 @@ A:
 """
 context = [{"role": "user", "content": template}] 
 response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-2024-05-13",
             messages=context,
             temperature=0,
             top_p=0
