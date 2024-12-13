@@ -36,6 +36,9 @@ python3.12 -m pip install --force-reinstall "pinecone-client[grpc]==5.0.0"
 python3.12 -m pip install --force-reinstall requests==2.32.3
 python3.12 -m pip install --force-reinstall tiktoken==0.7.0
 
+# openai 패키지와 호환성 문제 해결을 위한 httpx 패키지 다운그레이드
+python3.12 -m pip install --force-reinstall httpx==0.27.2
+
 # Python 및 pip alias 설정
 echo "alias python3='python3.12'" >> ~/.bashrc
 echo "alias pip='python3.12 -m pip'" >> ~/.bashrc
