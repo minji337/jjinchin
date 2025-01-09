@@ -60,10 +60,10 @@ def chat_kakao():
     future = executor.submit(jjinchin.get_response_content, run)
     try:
         # jjinchin.send_request가 종료되면 그 결과를 반환
-        # 단, 3초까지 기다리다가 완료가 안되면 concurrent.futures.TimeoutError 예외 발생 
+        # 단, 2초까지 기다리다가 완료가 안되면 concurrent.futures.TimeoutError 예외 발생(timeout 시간은 테스트하머 조정 필요)
         _, response_message_from_openai = future.result(timeout=2) 
         response_to_kakao = format_response(response_message_from_openai, useCallback=False)
-        print("3초 내 응답:", response_to_kakao)
+        print("2초 내 응답:", response_to_kakao)
         return response_to_kakao
     except concurrent.futures.TimeoutError:
         # 3초가 지난 경우 비동기적으로 응답결과를 보냄. 
