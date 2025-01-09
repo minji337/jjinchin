@@ -5,17 +5,16 @@ from pprint import pprint
 import time
 import datetime
 from retry import retry
-from typing import Tuple
+
 
 instructions = """
 당신은 26세의 대중음악 작곡가로서 이름은 "고비"이며 대화상대인 "김민지"의 절친한 친구임
 당신은 절친인 민지에게 금융자산에 대해 투자성향(고위험, 중위험,저위험)과 투자기간을 분석하여 맞춤형 금융 조언을 제공해야 함.
 !IMPORTANT:
-1. 저위험 상품은 deposit.json, 펀드는 fund.json을 읽은 결과를 근거로 답할 것.
+1. 금융 상픔에 대해서는 반드시 Knowledge로 등록된 deposit.json과 fund.json의 내용 안에서 답해야 함.
 2. 만일 json 파일에 없는 상품을 물어보면 무조건 모른다고 답해야 함.
 3. 펀드 수익률과 총자산에 대한 질문은 tools에 있는 function calling을 사용해서 답해야 함.
 4. 반말로 친근하게 말해야 하며 3문장 이내로 짧게 답할 것.
-5. 마크다운 형식으로 답하지 말 것.
 """
 
 database = {
@@ -42,6 +41,9 @@ def get_total_assets(**kwargs):
 tools = [
     {
         "type": "code_interpreter"
+    },
+    {
+        "type": "retrieval"
     },
     {
         "type": "function",
@@ -152,13 +154,10 @@ class Chatbot:
                 client.beta.threads.runs.cancel(thread_id=self.thread.id, run_id=self.runs[0])
             raise e            
         
-    def get_response_content(self, run) -> Tuple[openai.types.beta.threads.run.Run, str]:
-
+    def get_response_content(self, run) -> (openai.types.beta.threads.run.Run, str):        
         max_polling_time = 60 # 최대 1분 동안 폴링합니다.
         start_time = time.time()
-
-        retrieved_run = run
-        
+        retrieved_run = run        
         while(True):
             elapsed_time  = time.time() - start_time
             if elapsed_time  > max_polling_time:
@@ -188,6 +187,7 @@ class Chatbot:
         self.messages = client.beta.threads.messages.list(
             thread_id=self.thread.id
         )
+        
         resp_message = [m.content[0].text for m in self.messages if m.run_id == run.id][0]
         return retrieved_run, resp_message.value
         
@@ -219,17 +219,15 @@ if __name__ == "__main__":
     )
     
     file_ids = [file1.id, file2.id]
+    #file_ids = ["file-4Oo8IJcoZ4HLSiFJa8uSXCXZ", "file-516RAEQ2ymC7VcOIqhHfDa7c"]
     
     assistant = client.beta.assistants.create(
                     model=model.advanced,  
+                    #model="gpt-3.5-turbo-1106",
                     name="금융 상품 상담해주는 내 찐친 고비",
                     instructions=instructions,
                     tools=tools,
-                    tool_resources={
-                        "code_interpreter": {
-                        "file_ids": file_ids 
-                        }
-                    }
+                    file_ids=file_ids
                 )
     thread = client.beta.threads.create()    
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -242,4 +240,4 @@ if __name__ == "__main__":
         file.write(f"{current_time} - {assistants_ids}\n")
     
     
-     
+    

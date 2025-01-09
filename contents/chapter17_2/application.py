@@ -7,8 +7,8 @@ import requests
 import concurrent
 
 jjinchin = Chatbot(
-    assistant_id="asst_lbL8k9unN5Ch3A9LeavcLo4k",
-    thread_id="thread_TjjiTngxzDVHzeENAcdm77kX"
+    assistant_id="asst_xWQIEnC69opzE1Z1PS18gxBN",
+    thread_id="thread_RjDj3VsAswhWlS8YxaMjk6gN"
 )
 
 application = Flask(__name__)
@@ -36,6 +36,7 @@ def format_response(resp, useCallback=False):
 executor = ThreadPoolExecutor(max_workers=1)
 
 def async_send_request(chat_gpt, callbackUrl, future):
+    print("callbackUrl", callbackUrl)
     # future가 완료될 때까지 대기. 이후는 개선 전 코드와 동일
     _, response_message_from_openai = future.result()
     print("response_message_from_openai:", response_message_from_openai)
@@ -51,6 +52,7 @@ def chat_kakao():
     print("request.json:", request.json)
     request_message = request.json['userRequest']['utterance']
     callbackUrl = request.json['userRequest']['callbackUrl']    
+    print("callbackUrl", callbackUrl)
     # jjinchin 객체에 사용자 메시지를 미리 넣어 둠
     jjinchin.add_user_message(request_message)
     # jjinchin.send_request 메소드가 실행될 미래를 담고 있는 future 객체 반환     
@@ -59,7 +61,7 @@ def chat_kakao():
     try:
         # jjinchin.send_request가 종료되면 그 결과를 반환
         # 단, 3초까지 기다리다가 완료가 안되면 concurrent.futures.TimeoutError 예외 발생 
-        _, response_message_from_openai = future.result(timeout=3)
+        _, response_message_from_openai = future.result(timeout=1)
         response_to_kakao = format_response(response_message_from_openai, useCallback=False)
         print("3초 내 응답:", response_to_kakao)
         return response_to_kakao
